@@ -1,13 +1,7 @@
-package com.github.jonss.sunshine;
+package com.github.jonss.sunshine.connection;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.AsyncTask;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,30 +9,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 
-public class MainActivityFragment extends Fragment {
+/**
+ * Created by neuromancer on 23/08/16.
+ */
+public class FetchWeatherTask extends AsyncTask<Void, Void, String> {
 
-    //43784c9f5d427de7798f1de398b62ca3
-    // http://api.openweathermap.org/data/2.5/find?lat=-23.1857&lon=-46.8978&mode=json&units=celsius&APPID=43784c9f5d427de7798f1de398b62ca3&cnt=7
-    //"http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7"
-    public MainActivityFragment() {
-    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
-
-        String[] forecast = {"Hoje - Sol 22-29", "Amanhã - Chuva 12-19", "Segunda - chuva 9-22"};
-
-        List<String> list = Arrays.asList(forecast);
-
-        ListView listView = (ListView) view.findViewById(R.id.forecast_listview);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.forecast_item, list);
-        listView.setAdapter(adapter);
-
+    protected String doInBackground(Void... params) {
         // These two need to be declared outside the try/catch
 // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -85,7 +64,7 @@ public class MainActivityFragment extends Fragment {
             // If the code didn't successfully get the weather data, there's no point in attempting
             // to parse it.
             forecastJsonStr = null;
-        } finally{
+        } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
@@ -97,8 +76,16 @@ public class MainActivityFragment extends Fragment {
                 }
             }
         }
+        return forecastJsonStr;
+    }
 
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+    }
 
-        return view;
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
     }
 }
