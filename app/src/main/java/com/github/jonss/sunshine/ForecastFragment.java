@@ -17,12 +17,7 @@ import android.widget.Toast;
 
 import com.github.jonss.sunshine.connection.FetchWeatherTask;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -30,8 +25,9 @@ import java.util.concurrent.ExecutionException;
 public class ForecastFragment extends Fragment {
 
     //43784c9f5d427de7798f1de398b62ca3
-    // http://api.openweathermap.org/data/2.5/find?lat=-23.1857&lon=-46.8978&mode=json&units=celsius&APPID=43784c9f5d427de7798f1de398b62ca3&cnt=7
+    //  api.openweathermap.org/data/2.5/forecast/daily?lat=-23.1857&lon=-46.8978&cnt=7&APPID=43784c9f5d427de7798f1de398b62ca3
     //"http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7"
+
     public ForecastFragment() {
     }
 
@@ -60,7 +56,7 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.forecast_menu,  menu);
+        inflater.inflate(R.menu.forecast_menu, menu);
     }
 
     @Override
