@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.github.jonss.sunshine.connection.FetchWeatherTask;
 
@@ -54,6 +58,23 @@ public class ForecastFragment extends Fragment {
             e.printStackTrace();
         }
 
+        setHasOptionsMenu(true);
+
         return view;
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.forecast_menu,  menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                Toast.makeText(getActivity(), "Refresh clicado!", Toast.LENGTH_LONG).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
