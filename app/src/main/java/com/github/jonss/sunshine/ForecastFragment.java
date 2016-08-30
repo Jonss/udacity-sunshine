@@ -2,6 +2,7 @@ package com.github.jonss.sunshine;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,12 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
@@ -47,32 +54,29 @@ public class ForecastFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.forecast_item, list);
         listView.setAdapter(adapter);
 
-        FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-        AsyncTask<Void, Void, String> execute = fetchWeatherTask.execute();
-        try {
-            String s = execute.get();
-            Log.d("WEATHER", s);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        setHasOptionsMenu(true);
-
         return view;
     }
 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.forecast_menu,  menu);
+        inflater.inflate(R.menu.forecast_menu,  menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
+                FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+                AsyncTask<Void, Void, String> execute = fetchWeatherTask.execute();
+                try {
+                    String s = execute.get();
+                    Log.d("WEATHER", s);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(getActivity(), "Refresh clicado!", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
