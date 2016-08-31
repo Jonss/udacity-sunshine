@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -26,10 +27,9 @@ import java.util.concurrent.ExecutionException;
 public class ForecastFragment extends Fragment {
 
     private ListView listView;
+    private ArrayAdapter<Temperature> adapter;
 
-    //43784c9f5d427de7798f1de398b62ca3
-    //  api.openweathermap.org/data/2.5/forecast/daily?lat=-23.1857&lon=-46.8978&cnt=7&APPID=43784c9f5d427de7798f1de398b62ca3
-    //"http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7"
+    //api.openweathermap.org/data/2.5/forecast/daily?lat=-23.1857&lon=-46.8978&cnt=7&APPID=43784c9f5d427de7798f1de398b62ca3
 
     public ForecastFragment() {
     }
@@ -47,6 +47,14 @@ public class ForecastFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.forecast_listview);
         loadWeather();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getActivity(), "Clicado " + adapter.getItem(position), Toast.LENGTH_LONG).show();
+            }
+        });
+
 
         return view;
     }
@@ -76,7 +84,7 @@ public class ForecastFragment extends Fragment {
 
             WeatherDataParser parser = new WeatherDataParser();
             List<Temperature> temperatures = parser.parse(s);
-            ArrayAdapter<Temperature> adapter = new ArrayAdapter<>(getActivity(), R.layout.forecast_item, temperatures);
+            adapter = new ArrayAdapter<>(getActivity(), R.layout.forecast_item, temperatures);
             listView.setAdapter(adapter);
 
         } catch (InterruptedException e) {
