@@ -1,5 +1,6 @@
 package com.github.jonss.sunshine;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -51,10 +52,11 @@ public class ForecastFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), "Clicado " + adapter.getItem(position), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, adapter.getItem(position).toString());
+                startActivity(intent);
             }
         });
-
 
         return view;
     }
@@ -70,7 +72,6 @@ public class ForecastFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 loadWeather();
-                Toast.makeText(getActivity(), "Refresh clicado!", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -80,7 +81,6 @@ public class ForecastFragment extends Fragment {
         AsyncTask<Void, Void, String> execute = fetchWeatherTask.execute();
         try {
             String s = execute.get();
-            Log.d("WEATHER", s);
 
             WeatherDataParser parser = new WeatherDataParser();
             List<Temperature> temperatures = parser.parse(s);
