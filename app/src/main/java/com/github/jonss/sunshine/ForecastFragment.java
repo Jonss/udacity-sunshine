@@ -16,13 +16,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.jonss.sunshine.connection.FetchWeatherTask;
+import com.github.jonss.sunshine.model.Temperature;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import org.json.JSONException;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ForecastFragment extends Fragment {
+
+    private ListView listView;
 
     //43784c9f5d427de7798f1de398b62ca3
     //  api.openweathermap.org/data/2.5/forecast/daily?lat=-23.1857&lon=-46.8978&cnt=7&APPID=43784c9f5d427de7798f1de398b62ca3
@@ -42,13 +45,8 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        String[] forecast = {"Hoje - Sol 22-29", "Amanhã - Chuva 12-19", "Segunda - chuva 9-22"};
-
-        List<String> list = Arrays.asList(forecast);
-
-        ListView listView = (ListView) view.findViewById(R.id.forecast_listview);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.forecast_item, list);
-        listView.setAdapter(adapter);
+        listView = (ListView) view.findViewById(R.id.forecast_listview);
+        loadWeather();
 
         return view;
     }
@@ -63,18 +61,32 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-                AsyncTask<Void, Void, String> execute = fetchWeatherTask.execute();
-                try {
-                    String s = execute.get();
-                    Log.d("WEATHER", s);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+                loadWeather();
                 Toast.makeText(getActivity(), "Refresh clicado!", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void loadWeather() {
+        FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+        AsyncTask<Void, Void, String> execute = fetchWeatherTask.execute();
+        try {
+            String s = execute.get();
+            Log.d("WEATHER", s);
+
+            WeatherDataParser parser = new WeatherDataParser();
+            List<Temperature> temperatures = parser.parse(s);
+            ArrayAdapter<Temperature> adapter = new ArrayAdapter<>(getActivity(), R.layout.forecast_item, temperatures);
+            listView.setAdapter(adapter);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

@@ -22,6 +22,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String> {
     private static final String LAT = "-23.1857";
     private static final String LON = "-46.8978";
 
+
     @Override
     protected String doInBackground(Void... params) {
         String openWeatherUrl = new StringBuilder()
