@@ -14,26 +14,20 @@ import java.net.URL;
 /**
  * Created by neuromancer on 23/08/16.
  */
-public class FetchWeatherTask extends AsyncTask<Void, Void, String> {
+public class FetchWeatherTask extends AsyncTask<String, Void, String> {
 
     private static final String UNIT = "metric";
     private static final String DAYS = "7";
     private static final String KEY = "43784c9f5d427de7798f1de398b62ca3";
-    private static final String LAT = "-23.1857";
-    private static final String LON = "-46.8978";
+
+    //api.openweathermap.org/data/2.5/forecast/daily?zip=13202,BR&cnt=7&APPID=43784c9f5d427de7798f1de398b62ca3
 
 
     @Override
-    protected String doInBackground(Void... params) {
-        String openWeatherUrl = new StringBuilder()
-                .append("")
-                .append("lat=").append(LAT)
-                .append("&lon=").append(LON)
-                .append("&cnt=").append(DAYS)
-                .append("&APPID=").append(KEY)
-                .toString();
-
-        System.out.println(openWeatherUrl);
+    protected String doInBackground(String... params) {
+        Log.d("PARAMS: ", params[0]);
+        String zip = params[0].substring(0,5);
+        System.out.println("ZIP " + zip);
         // These two need to be declared outside the try/catch
 // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -49,9 +43,8 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String> {
 
             Uri uri = Uri.parse("http://api.openweathermap.org/data/2.5/forecast/daily?")
                     .buildUpon()
-                    .appendQueryParameter("lat", LAT)
-                    .appendQueryParameter("lon", LON)
-                    .appendQueryParameter("cnt", DAYS)
+                    .appendQueryParameter("zip", zip)
+                    .appendQueryParameter(",", "BR")
                     .appendQueryParameter("APPID", KEY)
                     .appendQueryParameter("units", UNIT).build();
 

@@ -2,7 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <EditTextPreference
-        android:id="@+id/location_text"
-        android:text="None"
-        />
+        android:id="@+id/pref_location"
+        android:defaultValue="@string/pref_location_default"
+        android:inputType="text"
+        android:key="@string/pref_location_key"
+        android:singleLine="true"
+        android:title="@string/pref_location_label" />
+
+
 </PreferenceScreen>

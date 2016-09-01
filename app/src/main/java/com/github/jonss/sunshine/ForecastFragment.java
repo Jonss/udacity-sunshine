@@ -1,8 +1,10 @@
 package com.github.jonss.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -42,12 +44,17 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        loadWeather();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         listView = (ListView) view.findViewById(R.id.forecast_listview);
-        loadWeather();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -72,21 +79,23 @@ public class ForecastFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 loadWeather();
-            case R.id.action_settings:
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void loadWeather() {
         FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-        AsyncTask<Void, Void, String> execute = fetchWeatherTask.execute();
         try {
-            String s = execute.get();
-
             WeatherDataParser parser = new WeatherDataParser();
-            List<Temperature> temperatures = parser.parse(s);
+
+            //Isso pega a defaultPreference
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String location = preferences.getString(getString(R.string.pref_location_key),
+                    getString(R.string.pref_location_default));
+
+            AsyncTask<String, Void, String> s = fetchWeatherTask.execute(location);
+
+            List<Temperature> temperatures = parser.parse(s.get());
             adapter = new ArrayAdapter<>(getActivity(), R.layout.forecast_item, temperatures);
             listView.setAdapter(adapter);
 
