@@ -9,7 +9,7 @@
         android:singleLine="true"
         android:title="@string/pref_location_label" />
 
-
+    <ListPreference
         android:title="@string/pref_units_label"
         android:key="@string/pref_units_key"
         android:defaultValue="@string/pref_units_metric"
