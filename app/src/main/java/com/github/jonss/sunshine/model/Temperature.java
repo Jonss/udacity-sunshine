@@ -5,8 +5,8 @@ package com.github.jonss.sunshine.model;
  */
 public class Temperature {
 
-    private final double mMin;
-    private final double mMax;
+    private final Double mMin;
+    private final Double mMax;
     private final String mMain;
 
     public Temperature(double min, double max, String main) {
@@ -17,7 +17,7 @@ public class Temperature {
 
     @Override
     public String toString() {
-        return mMain + " - " + mMax + "/" + mMin;
+        return mMain + " - " + mMax.intValue() + "/" + mMin.intValue();
     }
 
 }

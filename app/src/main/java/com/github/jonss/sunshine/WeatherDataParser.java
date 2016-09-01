@@ -1,5 +1,10 @@
 package com.github.jonss.sunshine;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
 import com.github.jonss.sunshine.model.Temperature;
 
 import org.json.JSONArray;
@@ -14,6 +19,12 @@ import java.util.List;
  */
 public class WeatherDataParser {
 
+    private Context context;
+
+    public WeatherDataParser(Context context) {
+        this.context = context;
+    }
+
     /**
      * Given a string of the form returned by the api call:
      * http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7
@@ -23,6 +34,10 @@ public class WeatherDataParser {
 
     public List<Temperature> parse(String weatherJsonStr)
             throws JSONException {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        PreferenceManager.setDefaultValues(context, R.xml.pref_general, false);
+        String unitType = preferences.getString(context.getString(R.string.pref_units_key), context.getString(R.string.pref_units_metric));
 
         List<Temperature> temperatures = new ArrayList<>();
 
@@ -34,6 +49,13 @@ public class WeatherDataParser {
             JSONObject temp = object.getJSONObject("temp");
             double max = temp.getDouble("max");
             double min = temp.getDouble("min");
+
+            if (unitType.equals(context.getString(R.string.pref_units_imperial))) {
+                max = (max * 1.8) + 32;
+                min = (max * 1.8) + 32;
+            } else if (!unitType.equals(context.getString(R.string.pref_units_imperial))) {
+                Log.d("WeatherDataParser", "Unit type not found");
+            }
 
             JSONArray weather = object.getJSONArray("weather");
             JSONObject weatherObj = weather.getJSONObject(0);

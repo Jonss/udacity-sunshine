@@ -86,10 +86,11 @@ public class ForecastFragment extends Fragment {
     public void loadWeather() {
         FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
         try {
-            WeatherDataParser parser = new WeatherDataParser();
+            WeatherDataParser parser = new WeatherDataParser(getActivity());
 
             //Isso pega a defaultPreference
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            PreferenceManager.setDefaultValues(getContext(), R.xml.pref_general, false);
             String location = preferences.getString(getString(R.string.pref_location_key),
                     getString(R.string.pref_location_default));
 
