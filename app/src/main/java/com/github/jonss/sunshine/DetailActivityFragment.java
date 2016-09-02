@@ -1,6 +1,7 @@
 package com.github.jonss.sunshine;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +21,12 @@ public class DetailActivityFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -31,12 +38,16 @@ public class DetailActivityFragment extends Fragment {
         TextView tempTextView = (TextView) inflate.findViewById(R.id.detail_text);
         tempTextView.setText(stringExtra);
 
-        setHasOptionsMenu(true);
         return inflate;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.menu_detail, menu);
+        inflater.inflate(R.menu.menu_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 }
